@@ -28,7 +28,7 @@ namespace Algorithms {
 				float qPheromones;
 				float attraction;
 
-				EdgeAnt(const std::string to, const uint32_t weight, const float qPheromones, const float attraction)	// TRY const REF for args ctor
+				EdgeAnt(const std::string to, const uint32_t weight, const float qPheromones, const float attraction)
 					:to(to), weight(weight), qPheromones(qPheromones), attraction(attraction) {}
 			};
 
@@ -50,7 +50,7 @@ namespace Algorithms {
 
 			// algorithm implement
 
-			static std::pair<uint32_t, std::vector<std::string>> foo(const TGraph& graph) {
+			static std::pair<uint32_t, std::vector<std::string>> foo(const TGraph& graph, const uint32_t qIterations) {
 
 				if (static bool isInitRand(false); !isInitRand) {
 
@@ -76,70 +76,76 @@ namespace Algorithms {
 				}
 
 				size_t qVertexes = vertexesQueue.size();
+				
+				uint32_t iterationCounter{ 0 };
+				while (iterationCounter++ < qIterations) {
 
-				while (!vertexesQueue.empty()) {
+					std::queue<std::string> vertexesQueueCopy = vertexesQueue;
 
-					std::string from = vertexesQueue.front();
-					TPath path;
-					uint32_t distance{ 0 };
+					while (!vertexesQueueCopy.empty()) {
 
-					std::string current = from;
-					do {	// строим путь
+						std::string from = vertexesQueueCopy.front();
+						TPath path;
+						uint32_t distance{ 0 };
 
-						float sum{ 0.0 };
-						std::vector<intervalInformation> vertexProbabilities;
-						for (auto it = graphAnt[current].begin(); it != graphAnt[current].end(); ++it) {
+						std::string current = from;
+						do {	// строим путь
 
-							if (!path.contains(it->to)) {
+							float sum{ 0.0 };
+							std::vector<intervalInformation> vertexProbabilities;
+							for (auto it = graphAnt[current].begin(); it != graphAnt[current].end(); ++it) {
 
-								float temp = std::powf(it->qPheromones, a) * std::powf(it->attraction, b);
-								vertexProbabilities.push_back({ it->to, it->weight, temp + sum });
-								sum += temp;
-							}
-						}
+								if (!path.contains(it->to)) {
 
-						float probability = rand() / (RAND_MAX - 1.);
-
-						for (auto it = vertexProbabilities.begin(); it != vertexProbabilities.end(); ++it) {
-
-							if (probability <= (it->k / sum)) {
-
-								distance += it->weight;
-								path[current] = it->vertex;
-								current = it->vertex;
-								break;
-							}
-						}
-						if (vertexProbabilities.empty())
-							current = "";
-
-					} while (current != "");
-
-					if (path.size() == qVertexes - 1) {
-
-						for (auto itVertex = graphAnt.begin(); itVertex != graphAnt.end(); ++itVertex) {
-
-							for (auto itNode = itVertex->second.begin(); itNode != itVertex->second.end(); ++itNode) {
-
-								itNode->qPheromones = itNode->qPheromones * (1 - p);
-
-								if (path[itVertex->first] == itNode->to) {
-
-									itNode->qPheromones += (static_cast<float>(1) / distance);
+									float temp = std::powf(it->qPheromones, a) * std::powf(it->attraction, b);
+									vertexProbabilities.push_back({ it->to, it->weight, temp + sum });
+									sum += temp;
 								}
 							}
+
+							float probability = rand() / (RAND_MAX - 1.);
+
+							for (auto it = vertexProbabilities.begin(); it != vertexProbabilities.end(); ++it) {
+
+								if (probability <= (it->k / sum)) {
+
+									distance += it->weight;
+									path[current] = it->vertex;
+									current = it->vertex;
+									break;
+								}
+							}
+							if (vertexProbabilities.empty())
+								current = "";
+
+						} while (current != "");
+
+						if (path.size() == qVertexes - 1) {
+
+							for (auto itVertex = graphAnt.begin(); itVertex != graphAnt.end(); ++itVertex) {
+
+								for (auto itNode = itVertex->second.begin(); itNode != itVertex->second.end(); ++itNode) {
+
+									itNode->qPheromones = itNode->qPheromones * (1 - p);
+
+									if (path[itVertex->first] == itNode->to) {
+
+										itNode->qPheromones += (static_cast<float>(1) / distance);
+									}
+								}
+							}
+
+							if (distance < bestDistance) {
+
+								bestDistance = distance;
+								bestPath = std::move(path);
+								pathStart = from;
+								path = {};
+							}
 						}
 
-						if (distance < bestDistance) {
-
-							bestDistance = distance;
-							bestPath = std::move(path);
-							pathStart = from;
-							path = {};
-						}
+						vertexesQueueCopy.pop();
 					}
-
-					vertexesQueue.pop();
 				}
 
 				std::vector<std::string> res;

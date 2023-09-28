@@ -18,7 +18,7 @@ int main() {
 
 	{	// get graph from file
 
-		ifstream fileIn("GraphData2.txt");
+		ifstream fileIn("GraphData1.txt");
 
 		if (!fileIn.is_open()) {
 			cout << "File no open!" << endl;
@@ -35,7 +35,7 @@ int main() {
 		fileIn.close();
 	}
 
-	auto [distance, path] = Algorithms::Graph::AntColony::foo(graph);
+	auto [distance, path] = Algorithms::Graph::AntColony::foo(graph, 1000);
 
 	cout << "Distance -> " << distance << endl;
 
