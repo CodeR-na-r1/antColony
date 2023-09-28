@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="GraphAlgorithms\AntColony.hpp" />
     <ClInclude Include="GraphAlgorithms\Edge.hpp" />
+    <ClInclude Include="Mytime.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

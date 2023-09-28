@@ -26,5 +26,8 @@
     <ClInclude Include="GraphAlgorithms\Edge.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Mytime.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

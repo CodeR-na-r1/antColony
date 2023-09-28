@@ -1,3 +1,5 @@
+#include "Mytime.hpp"
+
 #include "GraphAlgorithms/Edge.hpp"
 #include "GraphAlgorithms/AntColony.hpp"
 
@@ -18,7 +20,7 @@ int main() {
 
 	{	// get graph from file
 
-		ifstream fileIn("GraphData1.txt");
+		ifstream fileIn("GraphData2.txt");
 
 		if (!fileIn.is_open()) {
 			cout << "File no open!" << endl;
@@ -35,7 +37,13 @@ int main() {
 		fileIn.close();
 	}
 
+	cout << "Code running..." << endl;
+
+	Mytime timer;
+
 	auto [distance, path] = Algorithms::Graph::AntColony::foo(graph, 1000);
+
+	cout << "Time elapsed: " << timer.get_time() << endl;
 
 	cout << "Distance -> " << distance << endl;
 
